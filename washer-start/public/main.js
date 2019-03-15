@@ -29,12 +29,12 @@ function SmartHome() {
     this.requestSync = document.getElementById('request-sync');
     this.requestSync.addEventListener('click', () => {
       var xhttp = new XMLHttpRequest();
-      xhttp.onreadystatechange = function () {
+      xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-          console.log("Request SYNC success!");
+          console.log('Request SYNC success!');
         }
       };
-      xhttp.open("POST", "https://us-central1-<project-id>.cloudfunctions.net/requestsync", true);
+      xhttp.open('POST', 'https://us-central1-smarthome-2bcdb.cloudfunctions.net/requestsync', true);
       xhttp.send();
     });
 

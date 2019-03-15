@@ -60,7 +60,8 @@ exports.faketoken = functions.https.onRequest((request, response) => {
 
 const app = smarthome({
   debug: true,
-  key: '<api-key>',
+  key: 'AIzaSyDRFlgHE4qD-FTpD6MEer5egzB8mJb_AwI',
+  jwt: require('./key.json'),
 });
 
 app.onSync(body => {
@@ -260,4 +261,28 @@ exports.requestsync = functions.https.onRequest((request, response) => {
  */
 exports.reportstate = functions.database.ref('{deviceId}').onWrite((event) => {
   console.info('Firebase write event triggered this cloud function');
+  const snapshotVal = event.data.val();
+
+  const postData = {
+    requestId: 'ff36a3cc', /* Any unique ID */
+    agentUserId: '123', /* Hardcoded user ID */
+    payload: {
+      devices: {
+        states: {
+          /* Report the current state of our washer */
+          [event.params.deviceId]: {
+            on: snapshotVal.OnOff.on,
+            isPaused: snapshotVal.StartStop.isPaused,
+            isRunning: snapshotVal.StartStop.isRunning,
+          },
+        },
+      },
+    },
+  };
+
+  return app.reportState(postData)
+    .then((data) => {
+      console.log('Report state came back');
+      console.info(data);
+    });
 });
