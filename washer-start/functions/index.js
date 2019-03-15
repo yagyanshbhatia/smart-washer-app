@@ -63,34 +63,37 @@ const app = smarthome({
   key: '<api-key>',
 });
 
-app.onSync((body) => {
-  // TODO: Implement full SYNC response
+app.onSync(body => {
   return {
-    requestId: body.requestId,
+    requestId: 'ff36a3cc-ec34-11e6-b1a0-64510650abcf',
     payload: {
-      agentUserId: '123',
+      agentUserId: '123', 
       devices: [{
         id: 'washer',
         type: 'action.devices.types.WASHER',
         traits: [
           'action.devices.traits.OnOff',
+          'action.devices.traits.StartStop',
+          'action.devices.traits.RunCycle'
         ],
         name: {
           defaultNames: ['My Washer'],
           name: 'Washer',
-          nicknames: ['Washer'],
+          nicknames: ['Washer']
         },
         deviceInfo: {
           manufacturer: 'Acme Co',
           model: 'acme-washer',
           hwVersion: '1.0',
-          swVersion: '1.0.1',
+          swVersion: '1.0.1'
         },
-      }],
-    },
+        attributes: {
+          pausable: true
+        }
+     }]
+    }
   };
 });
-
 const queryFirebase = (deviceId) => firebaseRef.child(deviceId).once('value')
   .then((snapshot) => {
     const snapshotVal = snapshot.val();
