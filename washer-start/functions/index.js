@@ -76,6 +76,7 @@ app.onSync(body => {
           'action.devices.traits.StartStop',
           'action.devices.traits.RunCycle',
           'action.devices.traits.Modes',
+          'action.devices.traits.Toggles',
         ],
         name: {
           defaultNames: ['My Washer'],
@@ -110,7 +111,14 @@ app.onSync(body => {
                     }]
                 }],
               ordered: true
-            }]        
+            }],
+          availableToggles: [{
+              name: 'Turbo',
+              name_values: [{
+                  name_synonym: ['turbo'],
+                  lang: 'en'
+              }]
+          }]
         }
     }]
     }
@@ -211,6 +219,11 @@ app.onExecute((body) => {
             case 'action.devices.commands.SetModes':
               firebaseRef.child(deviceId).child('Modes').update({
                 load: params.updateModeSettings.load,
+              });
+              break;
+            case 'action.devices.commands.SetToggles':
+              firebaseRef.child(deviceId).child('Toggles').update({
+                Turbo: params.updateToggleSettings.Turbo,
               });
               break;
           }
