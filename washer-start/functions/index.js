@@ -64,61 +64,60 @@ const app = smarthome({
 });
 
 app.onSync(body => {
-  app.onSync(body => {
-    return {
-      requestId: 'ff36a3cc-ec34-11e6-b1a0-64510650abcf',
-      payload: {
-        agentUserId: '123',
-        devices: [{
-          id: 'washer',
-          type: 'action.devices.types.WASHER',
-          traits: [
-            'action.devices.traits.OnOff',
-            'action.devices.traits.StartStop',
-            'action.devices.traits.RunCycle',
-            'action.devices.traits.Modes',
-          ],
-          name: {
-            defaultNames: ['My Washer'],
-            name: 'Washer',
-            nicknames: ['Washer']
-          },
-          deviceInfo: {
-            manufacturer: 'Acme Co',
-            model: 'acme-washer',
-            hwVersion: '1.0',
-            swVersion: '1.0.1'
-          },
-          attributes: {
-            pausable: true,
-            availableModes: [{
-                name: 'load',
-                name_values: [{
-                    name_synonym: ['load'],
-                    lang: 'en'
-                  }],
-                settings: [{
-                    setting_name: 'small',
-                    setting_values: [{
-                        setting_synonym: ['small'],
-                        lang: 'en'
-                      }]
-                    }, {
-                    setting_name: 'large',
-                    setting_values: [{
-                        setting_synonym: ['large'],
-                        lang: 'en'
-                      }]
-                  }],
-                ordered: true
-              }]        
-          }
-      }]
-      }
-    };
-  });
+  return {
+    requestId: 'ff36a3cc-ec34-11e6-b1a0-64510650abcf',
+    payload: {
+      agentUserId: '123',
+      devices: [{
+        id: 'washer',
+        type: 'action.devices.types.WASHER',
+        traits: [
+          'action.devices.traits.OnOff',
+          'action.devices.traits.StartStop',
+          'action.devices.traits.RunCycle',
+          'action.devices.traits.Modes',
+        ],
+        name: {
+          defaultNames: ['My Washer'],
+          name: 'Washer',
+          nicknames: ['Washer']
+        },
+        deviceInfo: {
+          manufacturer: 'Acme Co',
+          model: 'acme-washer',
+          hwVersion: '1.0',
+          swVersion: '1.0.1'
+        },
+        attributes: {
+          pausable: true,
+          availableModes: [{
+              name: 'load',
+              name_values: [{
+                  name_synonym: ['load'],
+                  lang: 'en'
+                }],
+              settings: [{
+                  setting_name: 'small',
+                  setting_values: [{
+                      setting_synonym: ['small'],
+                      lang: 'en'
+                    }]
+                  }, {
+                  setting_name: 'large',
+                  setting_values: [{
+                      setting_synonym: ['large'],
+                      lang: 'en'
+                    }]
+                }],
+              ordered: true
+            }]        
+        }
+    }]
+    }
+  };
+});
 
-  const queryFirebase = (deviceId) => firebaseRef.child(deviceId).once('value')
+const queryFirebase = (deviceId) => firebaseRef.child(deviceId).once('value')
   .then((snapshot) => {
     const snapshotVal = snapshot.val();
     return {
@@ -197,6 +196,11 @@ app.onExecute((body) => {
                 isPaused: params.pause,
               });
               payload.commands[0].states.isPaused = params.pause;
+              break;
+            case 'action.devices.commands.SetModes':
+              firebaseRef.child(deviceId).child('Modes').update({
+                load: params.updateModeSettings.load,
+              });
               break;
           }
         }
