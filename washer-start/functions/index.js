@@ -112,8 +112,28 @@ const queryDevice = (deviceId) => queryFirebase(deviceId).then((data) => ({
 }));
 
 app.onQuery((body) => {
-  // TODO: Implement QUERY response
-  return {};
+  const {requestId} = body;
+  const payload = {
+    devices: {},
+  };
+  const queryPromises = [];
+  for (const input of body.inputs) {
+    for (const device of input.payload.devices) {
+      const deviceId = device.id;
+      queryPromises.push(queryDevice(deviceId)
+        .then((data) => {
+          // Add response to device payload
+          payload.devices[deviceId] = data;
+        }
+        ));
+    }
+  }
+  // Wait for all promises to resolve
+  return Promise.all(queryPromises).then((values) => ({
+    requestId: requestId,
+    payload: payload,
+  })
+  );
 });
 
 app.onExecute((body) => {
