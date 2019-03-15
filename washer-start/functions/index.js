@@ -133,11 +133,12 @@ const queryFirebase = (deviceId) => firebaseRef.child(deviceId).once('value')
       isPaused: snapshotVal.StartStop.isPaused,
       isRunning: snapshotVal.StartStop.isRunning,
       load: snapshotVal.Modes.load,
+      turbo: snapshotVal.Toggles.Turbo,
     };
   });
 
 // eslint-disable-next-line
-const queryDevice = (deviceId) =>    queryFirebase(deviceId).then((data) => ({
+const queryDevice = (deviceId) => queryFirebase(deviceId).then((data) => ({
   on: data.on,
   isPaused: data.isPaused,
   isRunning: data.isRunning,
@@ -150,6 +151,9 @@ const queryDevice = (deviceId) =>    queryFirebase(deviceId).then((data) => ({
   currentCycleRemainingTime: 301,
   currentModeSettings: {
     load: data.load,
+  },
+  currentToggleSettings: {
+    Turbo: data.turbo,
   },
 }));
 
